@@ -40,6 +40,17 @@ RUN \
     && ln -s $(which lld-20) /usr/bin/ld \
     && ln -s $(which clang-20) /usr/bin/cc \
     && ldconfig \
+    # Install libuv (for Astron)
+    && cd /tmp \
+    && echo "Downloading libuv..." \
+    && curl -SsL https://api.github.com/repos/libuv/libuv/zipball/v1.x | bsdtar -x \
+    && mv *libuv* libuv \
+    && cd /tmp/libuv \
+    && mkdir build \
+    && cd build \
+    && cmake -G"Ninja" -DCMAKE_INSTALL_PREFIX:PATH=/usr -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DCMAKE_BUILD_TYPE=Release -DLIBUV_BUILD_SHARED=ON -DLIBUV_BUILD_TESTS=OFF -DLIBUV_BUILD_BENCH=OFF .. \
+    && cmake --build . --target install --config Release --parallel $(nproc) \
+    && rm -rf /tmp/* \
     # Install HAProxy (for SSL termination)
     && cd /tmp \
     && echo "Downloading HAProxy..." \
