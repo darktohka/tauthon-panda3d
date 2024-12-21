@@ -1,0 +1,22 @@
+name: Autobuild for Docker
+
+on: [push, workflow_dispatch, repository_dispatch]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Login to Docker
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | buildah login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin "${{ secrets.DOCKER_HOST }}"
+      - name: Build the image
+        run: |
+          buildah bud --squash --format=docker \
+            --tag "${{ secrets.DOCKER_TAG }}:latest" \
+            --manifest image \
+            --platform linux/amd64 \
+            .
+      - name: Push the image
+        run: |
+          buildah manifest push --all image docker://docker.io/${{ secrets.DOCKER_TAG }}
