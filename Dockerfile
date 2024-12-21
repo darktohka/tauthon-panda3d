@@ -17,8 +17,6 @@ SHELL ["/bin/bash", "-c"]
 RUN \
     # Enable debug log during build
     set -x \
-    # Allow unauthenticated packages (LLVM)
-    && echo 'APT::Get::AllowUnauthenticated "true";' > /etc/apt/apt.conf.d/99-unauthenticated \
     # Enable contrib repository
     && sed -Ei 's/main/main contrib/;' /etc/apt/sources.list.d/debian.sources \
     # Enable LLVM repository as higher priority than Debian llvm
@@ -30,11 +28,11 @@ RUN \
     && apt-get --option=Dpkg::Options::=--force-confdef --no-install-recommends install -y libffi8 libpng16-16t64 libjpeg62-turbo libopus0 libopusfile0 libvorbis0a libvorbisenc2 libvorbisfile3 libogg0 libssl3t64 libfreetype6 zlib1g libstdc++6 libpcre2-32-0 libpcre2-posix3 libopenal1 lzma bzip2 ca-certificates curl libarchive-tools \
     && export INSTALLED_PACKAGES=$(dpkg --get-selections | grep -v deinstall | cut -f 1) \
     # Install latest LLVM toolchain
-    && echo "deb http://apt.llvm.org/unstable llvm-toolchain main" > /etc/apt/sources.list.d/llvm.list \
-    && echo "deb https://deb.tohka.us sid main" > /etc/apt/sources.list.d/tohka.list \
-    && apt-get -o Acquire::AllowInsecureRepositories=true -o Acquire::AllowDowngradeToInsecureRepositories=true update \
+    && echo "deb [trusted=yes] http://apt.llvm.org/unstable llvm-toolchain main" > /etc/apt/sources.list.d/llvm.list \
+    && echo "deb [trusted=yes] https://deb.tohka.us sid main" > /etc/apt/sources.list.d/tohka.list \
+    && apt-get update \
     # Install development tools
-    && apt-get -o APT::Get::AllowUnauthenticated=true --no-install-recommends install -y clang-20 llvm-20 lld-20 ccache cmake ninja-build bison flex make libffi-dev libpng-dev libjpeg62-turbo-dev libopus-dev libopusfile-dev libvorbis-dev libogg-dev libssl-dev libfreetype-dev zlib1g-dev libeigen3-dev libpcre2-dev libopenal-dev liblzma-dev libbz2-dev linux-current-headers-all linux-current-headers-generic-$(dpkg --print-architecture) libbluetooth-dev rustc cargo dpkg-dev \
+    && apt-get --no-install-recommends install -y clang-20 llvm-20 lld-20 ccache cmake ninja-build bison flex make libffi-dev libpng-dev libjpeg62-turbo-dev libopus-dev libopusfile-dev libvorbis-dev libogg-dev libssl-dev libfreetype-dev zlib1g-dev libeigen3-dev libpcre2-dev libopenal-dev liblzma-dev libbz2-dev linux-current-headers-all linux-current-headers-generic-$(dpkg --print-architecture) libbluetooth-dev rustc cargo dpkg-dev \
     # Setup compilation cache
     && ccache -s \
     # Setup clang as default compiler
