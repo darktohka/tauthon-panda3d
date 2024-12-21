@@ -10,6 +10,22 @@ This repository contains a Dockerfile to build a Docker image with Tauthon 2.8 a
 
 ## Usage
 
+### Using the provided image
+
+You can use the provided image to get started right away:
+
+```sh
+docker run -it darktohka/tauthon-panda3d:latest
+```
+
+To make the image more useful, feel free to mount a game source as a directory:
+
+```sh
+docker run -v "$(pwd)/toontown:/toontown" -it darktohka/tauthon-panda3d:latest
+```
+
+### Building your own image
+
 To build the Docker image, run the following command:
 
 ```sh
@@ -20,10 +36,4 @@ To run a container using the built image:
 
 ```sh
 docker run -it tauthon-panda3d
-```
-
-To make the image more useful, feel free to mount a game source as a directory:
-
-```sh
-docker run -v "$(pwd)/toontown:/toontown" -it tauthon-panda3d
 ```
