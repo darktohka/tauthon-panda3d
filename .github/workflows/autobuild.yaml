@@ -12,11 +12,11 @@ jobs:
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | buildah login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin "${{ secrets.DOCKER_HOST }}"
       - name: Build the image
         run: |
-          buildah bud --squash --format=docker \
+          buildah bud --squash \
             --tag "${{ secrets.DOCKER_TAG }}:latest" \
             --manifest image \
             --platform linux/amd64 \
             .
       - name: Push the image
         run: |
-          buildah manifest push --all image docker://docker.io/${{ secrets.DOCKER_TAG }}
+          buildah manifest push image docker://docker.io/${{ secrets.DOCKER_TAG }}
