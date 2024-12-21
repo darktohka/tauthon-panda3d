@@ -25,7 +25,7 @@ RUN \
     && apt-get update \
     && apt-get --option=Dpkg::Options::=--force-confdef -y upgrade \
     # Install libraries
-    && apt-get --option=Dpkg::Options::=--force-confdef --no-install-recommends install -y libffi8 libpng16-16t64 libjpeg62-turbo libopus0 libopusfile0 libvorbis0a libvorbisenc2 libvorbisfile3 libogg0 libssl3t64 libfreetype6 zlib1g libstdc++6 libpcre2-32-0 libpcre2-posix3 libopenal1 lzma bzip2 ca-certificates curl libarchive-tools \
+    && apt-get --option=Dpkg::Options::=--force-confdef --no-install-recommends install -y libffi8 libpng16-16t64 libjpeg62-turbo libopus0 libopusfile0 libvorbis0a libvorbisenc2 libvorbisfile3 libogg0 libssl3t64 libfreetype6 zlib1g libstdc++6 libpcre2-32-0 libpcre2-posix3 libopenal1 lzma bzip2 ca-certificates curl libarchive-tools libuv1t64 \
     && export INSTALLED_PACKAGES=$(dpkg --get-selections | grep -v deinstall | cut -f 1) \
     # Install latest LLVM toolchain
     && echo "deb [trusted=yes] http://apt.llvm.org/unstable llvm-toolchain main" > /etc/apt/sources.list.d/llvm.list \
@@ -40,17 +40,6 @@ RUN \
     && ln -s $(which lld-20) /usr/bin/ld \
     && ln -s $(which clang-20) /usr/bin/cc \
     && ldconfig \
-    # Install libuv (for Astron)
-    && cd /tmp \
-    && echo "Downloading libuv..." \
-    && curl -SsL https://api.github.com/repos/libuv/libuv/zipball/v1.x | bsdtar -x \
-    && mv *libuv* libuv \
-    && cd /tmp/libuv \
-    && mkdir build \
-    && cd build \
-    && cmake -G"Ninja" -DCMAKE_INSTALL_PREFIX:PATH=/usr -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DCMAKE_BUILD_TYPE=Release -DLIBUV_BUILD_SHARED=ON -DLIBUV_BUILD_TESTS=OFF -DLIBUV_BUILD_BENCH=OFF .. \
-    && cmake --build . --target install --config Release --parallel $(nproc) \
-    && rm -rf /tmp/* \
     # Install HAProxy (for SSL termination)
     && cd /tmp \
     && echo "Downloading HAProxy..." \
