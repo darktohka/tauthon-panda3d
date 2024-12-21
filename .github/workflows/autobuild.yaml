@@ -14,9 +14,8 @@ jobs:
         run: |
           buildah bud --squash --format=docker \
             --tag "${{ secrets.DOCKER_TAG }}:latest" \
-            --manifest image \
             --platform linux/amd64 \
             .
       - name: Push the image
         run: |
-          buildah manifest push image docker://docker.io/${{ secrets.DOCKER_TAG }}
+          buildah push "{{ secrets.DOCKER_TAG }}"
