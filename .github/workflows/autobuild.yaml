@@ -18,4 +18,4 @@ jobs:
             .
       - name: Push the image
         run: |
-          buildah push "{{ secrets.DOCKER_TAG }}"
+          buildah push "${{ secrets.DOCKER_TAG }}"
