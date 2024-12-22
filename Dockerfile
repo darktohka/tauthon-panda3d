@@ -96,4 +96,5 @@ RUN \
     && ccache -s \
     && apt-get -y autoremove --purge $((comm -3 <(dpkg --get-selections | grep -v deinstall | cut -f 1 | sort) <(echo $INSTALLED_PACKAGES | xargs -n1 | sort)) | xargs) \
     && find /tmp -mindepth 1 -delete \
-    && rm -rf /usr/include/ode /usr/cmake /var/lib/apt/lists/* /root/.cache /root/.cmake /var/cache
+    && rm -rf /usr/include/ode /usr/cmake /var/lib/apt/lists/* /root/.cache /root/.cmake /var/cache \
+    && mkdir -p /var/cache/apt/archives
