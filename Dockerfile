@@ -26,6 +26,8 @@ RUN \
     && apt-get --option=Dpkg::Options::=--force-confdef -y upgrade \
     # Install libraries
     && apt-get --option=Dpkg::Options::=--force-confdef --no-install-recommends install -y libffi8 libpng16-16t64 libjpeg62-turbo libopus0 libopusfile0 libvorbis0a libvorbisenc2 libvorbisfile3 libogg0 libssl3t64 libfreetype6 zlib1g libstdc++6 libpcre2-32-0 libpcre2-posix3 libopenal1 lzma bzip2 ca-certificates curl libarchive-tools libuv1t64 \
+    # Install utilities
+    && apt-get --option=Dpkg::Options::=--force-confdef --no-install-recommends install -y htop nano procps \
     && export INSTALLED_PACKAGES=$(dpkg --get-selections | grep -v deinstall | cut -f 1) \
     # Install latest LLVM toolchain
     && echo "deb [trusted=yes] http://apt.llvm.org/unstable llvm-toolchain main" > /etc/apt/sources.list.d/llvm.list \
