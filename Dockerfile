@@ -4,8 +4,8 @@ ARG configuration=Release
 ARG flags="-O3 -flto"
 
 ENV SHELL=/bin/bash \
-    CC="/usr/bin/ccache /usr/bin/clang-20" \
-    CXX="/usr/bin/ccache /usr/bin/clang++-20" \
+    CC="/usr/bin/ccache /usr/bin/clang-21" \
+    CXX="/usr/bin/ccache /usr/bin/clang++-21" \
     LANG=C.UTF-8 \
     PYTHONUNBUFFERED=1 \
     PIP_DISABLE_PIP_VERSION_CHECK=1 \
@@ -27,20 +27,20 @@ RUN \
     # Install libraries
     && apt-get --option=Dpkg::Options::=--force-confdef --no-install-recommends install -y libffi8 libpng16-16t64 libjpeg62-turbo libopus0 libopusfile0 libvorbis0a libvorbisenc2 libvorbisfile3 libogg0 libssl3t64 libfreetype6 zlib1g libstdc++6 libpcre2-32-0 libpcre2-posix3 libopenal1 lzma bzip2 ca-certificates curl libarchive-tools libuv1t64 \
     # Install utilities
-    && apt-get --option=Dpkg::Options::=--force-confdef --no-install-recommends install -y htop nano procps \
+    && apt-get --option=Dpkg::Options::=--force-confdef --no-install-recommends install -y htop nano procps screen \
     && export INSTALLED_PACKAGES=$(dpkg --get-selections | grep -v deinstall | cut -f 1) \
     # Install latest LLVM toolchain
     && echo "deb [trusted=yes] http://apt.llvm.org/unstable llvm-toolchain main" > /etc/apt/sources.list.d/llvm.list \
     && echo "deb [trusted=yes] https://deb.tohka.us sid main" > /etc/apt/sources.list.d/tohka.list \
     && apt-get update \
     # Install development tools
-    && apt-get --no-install-recommends install -y clang-20 llvm-20 lld-20 ccache cmake ninja-build bison flex make libffi-dev libpng-dev libjpeg62-turbo-dev libopus-dev libopusfile-dev libvorbis-dev libogg-dev libssl-dev libfreetype-dev zlib1g-dev libeigen3-dev libpcre2-dev libopenal-dev liblzma-dev libbz2-dev linux-current-headers-all linux-current-headers-generic-$(dpkg --print-architecture) libbluetooth-dev rustc cargo dpkg-dev \
+    && apt-get --no-install-recommends install -y clang-21 llvm-21 lld-21 ccache cmake ninja-build bison flex make libffi-dev libpng-dev libjpeg62-turbo-dev libopus-dev libopusfile-dev libvorbis-dev libogg-dev libssl-dev libfreetype-dev zlib1g-dev libeigen3-dev libpcre2-dev libopenal-dev liblzma-dev libbz2-dev linux-current-headers-all linux-current-headers-generic-$(dpkg --print-architecture) libbluetooth-dev rustc cargo dpkg-dev \
     # Setup compilation cache
     && ccache -s \
     # Setup clang as default compiler
     && rm -f /usr/bin/ld /usr/bin/cc \
-    && ln -s $(which lld-20) /usr/bin/ld \
-    && ln -s $(which clang-20) /usr/bin/cc \
+    && ln -s $(which lld-21) /usr/bin/ld \
+    && ln -s $(which clang-21) /usr/bin/cc \
     && ldconfig \
     # Install HAProxy (for SSL termination)
     && cd /tmp \
@@ -57,7 +57,7 @@ RUN \
     && cd /tmp \
     && echo "Downloading Python..." \
     && curl -SsL https://github.com/naftaliharris/tauthon/archive/refs/heads/master.tar.gz | bsdtar -x \
-    && mv *tauthon* python \ 
+    && mv *tauthon* python \
     && cd /tmp/python \
     && ./configure --prefix=/usr --enable-shared \
     && EXTRA_CFLAGS="$flags" LDFLAGS="-Wl,--strip-all" make -j$(nproc) \
